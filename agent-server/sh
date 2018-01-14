@@ -1,0 +1,1 @@
+g++ -std=c++11 agentBaseTask.cpp agentBehaviorTask.cpp agentEndTask.cpp agentLoginTask.cpp agentQueryTask.cpp agentRelayTask.cpp agentTaskFactory.cpp main.cpp ./tableManage/agentState.cpp ./tableManage/agentStateManage.cpp ./tableManage/agentTransManage.cpp ./packet/packet.cpp  -o main

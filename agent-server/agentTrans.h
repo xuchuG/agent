@@ -5,16 +5,15 @@
 
 class AgentTask;
 
-class AgentTrans
+class agent_trans
 {
-  private:
+  public:
     int fd;
-    queue<pair<char*,int> > sendQue;
-    queue<pair<char*,int> > recvQue;
+    queue<pair<char*,char*> > sendQue;
+    queue<pair<char*,char*> > recvQue;
     AgentTask * task;
   public:
-    struct packet  
 
-}
+};
 
 #endif

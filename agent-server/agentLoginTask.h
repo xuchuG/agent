@@ -1,9 +1,9 @@
 #ifndef AGENTLOGINTASK_H_
 #define AGENTLOGINTASK_H_
 
-#include <queue.h>
+#include <queue>
 
-#include "agentBaviorTask.h"
+#include "agentBehaviorTask.h"
 
 using Queue = queue<pair<char*,char*> >;
 
@@ -15,17 +15,15 @@ class AgentLoginTask : public AgentBehaviorTask
     agent_trans * relay_trans;//通信模块
 
   public:
-    AgentLoginTask(AgentTable & table,Queue & recvque,Queue & sendque,agent_trans * ptr):
-      AgentBehaviorTask(table)
+    AgentLoginTask(AgentTransManage & atrans_manage,Queue & recvque,Queue & sendque,agent_trans * ptr):
+      AgentBehaviorTask(atrans_manage),recvQue(recvque),sendQue(sendque)
     {
-      recvQue = recvque;
-      sendQue = sendque;
       relay_trans = ptr;
     }
     ~AgentLoginTask(){}
 
     virtual void run();
 
-}
+};
 
 #endif

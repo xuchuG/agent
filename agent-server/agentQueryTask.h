@@ -1,13 +1,13 @@
 #ifndef AGENTQUERYTASK_H_
 #define AGENTQUERYTASK_H_
 
-#include <queue.h>
+#include <queue>
 
 #include "agentBehaviorTask.h"
 
-using Queue = queue<char*,char*>;
+using Queue = queue<pair<char*,char*> >;
 
-class AgentQueryTask : public AgentBehavior
+class AgentQueryTask : public AgentBehaviorTask
 {
   private:
     Queue & recvQue;
@@ -15,17 +15,15 @@ class AgentQueryTask : public AgentBehavior
     agent_trans * relay_trans;
 
   public:
-    AgentQueryTask(AgentTable & agent_table,Queue & recvque,
-        Queue & sendque,agent_trans * ptr):AgentTable(agent_table)
+    AgentQueryTask(AgentTransManage & atrans_manage,Queue & recvque,
+        Queue & sendque,agent_trans * ptr):AgentBehaviorTask(atrans_manage),recvQue(recvque),sendQue(sendque)
     {
-      recvQue = recvque;
-      sendQue = sendque;
       relay_trans = ptr;
     }
     ~AgentQueryTask(){}
 
     virtual void run();
-}
+};
 
 
 #endif

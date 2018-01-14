@@ -1,6 +1,14 @@
 #include "agentEndTask.h"
+#include "agentBehaviorTask.h"
+#include "./packet/packet.h"
 
-virtual void AgentEndTask::run()
+void AgentEndTask::run()
 {
+    struct head headTmp;
 
+    headTmp = AgentBehaviorTask::decodePacHead(recvQue);
+    if(headTmp.cmd != PacketCommand::EndCmd)
+    {
+
+    }
 }

@@ -1,26 +1,30 @@
 #include "agentQueryTask.h"
+#include "./packet/packet.h"
 
-virtual void AgentQueryTask::run()
+
+void AgentQueryTask::run()
 {
   struct head headTmp;
 
-  headTmp = AgentBehavior::decodePacHead(recvQue);
-  if(headTmp.cmd == Packet::QueryCmd)
+  headTmp = AgentBehaviorTask::decodePacHead(recvQue);
+  recvQue.pop();
+
+  if(headTmp.cmd != PacketCommand::QueryCmd)
   {
     //未发送所期待的查询报文
     char * head;
     char * tail;
-    Packet::MakeErrorAck(AckPacState::SEQUEUE_ERROR,head,tail);
+    Packet::MakeErrorAck(AckPacCmd::SEQUENCE_ERROR,head,tail);
     sendQue.push(make_pair(head,tail));
     return;
   }
 
-  if(agent_table.isContainsId(headTmp.id) < 0)
+  if(agent_trans_manage.isContainsId(headTmp.id) < 0)
   {
     //对端还没登录
     char * head;
     char * tail;
-    Packet::MakeErrorAck(AckPacState::USER_OFFLINE,head,tail);
+    Packet::MakeErrorAck(AckPacCmd::USER_OFFLINE,head,tail);
     sendQue.push(make_pair(head,tail));
     return;
   }
@@ -28,7 +32,7 @@ virtual void AgentQueryTask::run()
   //回应查询成功
   char * head;
   char * tail;
-  Packet::MakeSucAck(AckPacState::QUERY_SUC,head,tail);
+  Packet::MakeSucAck(AckPacCmd::QUERY_SUC,head,tail);
   sendQue.push(make_pair(head,tail));
   return;
 }
