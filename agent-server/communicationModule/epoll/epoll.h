@@ -1,28 +1,38 @@
 #ifndef _EPOLL_H_
 #define _EPOLL_H_
 
-#include "pacManage.h"
+//单例模式
+
+#include "epoller.h"
+#include "../../tableManage/agentEpollerManage.h"
 #include <sys/epoll.h>
 
-class Epoll
-{
-  private:
-    int epollFd;//保存epoll描述符
-    int socketSize;//最大的事件监听数
-    struct epoll_event * events;//监听的所有事件集合
-    int evCount;//发生的事件的个数
-  public:
-    Epoll(int socketSizee);//initial socketSize && events
-    ~Epoll();
-    void init(int listenSocket);//epoll_create & listenSocket add event
-    void run();//epoll_wait
-    void add_event(PacManage * pm,int state);
-    void modify_event(PacManage * pm,int state);
-    void delete_event(PacManage * pm,int state);
-    
-    //get or set
-    int getEvCount();
-    struct epoll_event* getEpollEvents();
+#define MAX_SOCKET_SIZE 1000
+
+class Epoll{
+    private:
+        int epoll_fd;//保存epoll描述符
+        int socket_size;//最大的事件监听数
+        struct epoll_event * events;//监听的所有事件集合
+
+       AgentEpollerManage & agent_epoller_manage;
+
+    private:
+        Epoll(int socket_sizee,AgentEpollerManage agent_epoller_managee);
+        Epoll(Epoll const &){}
+        Epoll & operator=(Epoll const &){}
+        ~Epoll();
+
+    public:
+        static Epoll & instance();
+        //void init(int listenSocket);//epoll_create & listenSocket add event
+        void oneRound();
+        void handOneEvent(struct epoll_event ev);
+
+        void addEvent(long long epoller_id,int fd,int state);
+        void modifyEvent(long long epoller_id,int fd,int state);
+        void deleteEvent(long long epoller_id,int state);
+
 };
 
 #endif
