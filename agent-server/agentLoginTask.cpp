@@ -5,8 +5,10 @@ void AgentLoginTask::run()
 {
   struct head headTmp;
 
-  headTmp = AgentBehaviorTask::decodePacHead(recvQue);
-  recvQue.pop();
+  headTmp = AgentBehaviorTask::decodePacHead(recv_que);
+
+  free(recv_que.front().first);
+  recv_que.pop();
 
   if(headTmp.cmd != PacketCommand::LoginCmd)
   {
@@ -14,7 +16,7 @@ void AgentLoginTask::run()
     char * head;
     char * tail;
     Packet::MakeErrorAck(AckPacCmd::SEQUENCE_ERROR,head,tail);
-    sendQue.push(make_pair(head,tail));
+    send_que.push(make_pair(head,tail));
     return;
   }
 
@@ -24,15 +26,22 @@ void AgentLoginTask::run()
     char * head;
     char * tail;
     Packet::MakeErrorAck(AckPacCmd::ID_ALREADY_EXIST,head,tail);
-    sendQue.push(make_pair(head,tail));
+    send_que.push(make_pair(head,tail));
     return;
   }
 
-  //将需要登录的的用户id和agent_trans*插入表中
-  if(agent_trans_manage.insert(headTmp.id,relay_trans) < 0)
+  //将需要登录的的用户id和TcpEpoller*插入表中
+  if(agent_trans_manage.insert(headTmp.id,tcp_epoller) < 0)
   {
     //插入id出错
     cerr << "agent_trans_manage:insert id: " <<
+    headTmp.id << "error!" << endl;
+  }
+
+  if(agent_trans_id_manage.insert(tcp_epoller,headTmp.id) < 0)
+  {
+    //插入id出错
+    cerr << "agent_trans_id_manage:insert id: " <<
     headTmp.id << "error!" << endl;
   }
 
@@ -40,6 +49,9 @@ void AgentLoginTask::run()
   char * head;
   char * tail;
   Packet::MakeSucAck(AckPacCmd::LOGIN_SUC,head,tail);
-  sendQue.push(make_pair(head,tail));
+  send_que.push(make_pair(head,tail));
+
+  //修改状态
+  agent_state->setState(State::QUERY);
   return;
 }

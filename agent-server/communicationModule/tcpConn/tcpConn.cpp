@@ -1,4 +1,12 @@
 #include "tcpConn.h"
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <unistd.h>
+#include <iostream>
+using namespace std;
 
 void TcpConn::setNonBlock(int fd){
     int flags;
@@ -25,6 +33,6 @@ void TcpConn::setReuseAddr(int fd){
     int opt = 1;
     if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR,
             (const void *)&opt,sizeof(int)) == -1){
-        cerr << "set reuse addr!\n";
+        cerr << "set reuse addr error!\n";
   }
 }

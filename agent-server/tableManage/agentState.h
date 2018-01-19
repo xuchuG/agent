@@ -18,9 +18,8 @@ namespace State
 {
     const int LOGIN = 0;
     const int QUERY = 1;
-    const int READ = 2;
-    const int WRITE = 3;
-    const int END = 4;
+    const int RELAY = 2;
+    const int END = 3;
 };
 
 #endif

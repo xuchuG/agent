@@ -10,8 +10,15 @@ class TableManage
 {
     private:
         map<TLeft,TRight> table;
+        int generate_id;
 
     public:
+        TableManage():generate_id(0){}
+
+        int generateId(){
+            return generate_id++;
+        }
+
         int insert(TLeft left,TRight right)
         {
             //pair<auto,bool> ret;
@@ -31,7 +38,7 @@ class TableManage
             auto it = table.find(left);
             if(it == table.end())
             {
-                cerr << "table find error!";
+                //cerr << "table find error!";
                 return NULL;
             }
             return it->second;

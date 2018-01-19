@@ -6,7 +6,7 @@ void AgentEndTask::run()
 {
     struct head headTmp;
 
-    headTmp = AgentBehaviorTask::decodePacHead(recvQue);
+    headTmp = AgentBehaviorTask::decodePacHead(recv_que);
     if(headTmp.cmd != PacketCommand::EndCmd)
     {
 

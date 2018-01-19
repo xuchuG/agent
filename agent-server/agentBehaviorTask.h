@@ -4,8 +4,6 @@
 #include "agentBaseTask.h"
 #include "./tableManage/agentTransManage.h"
 #include "./packet/packet.h"
-#include "agentTrans.h"
-#
 #include <queue>
 
 using Queue = queue<pair<char*,char*> >;

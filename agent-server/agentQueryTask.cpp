@@ -6,8 +6,10 @@ void AgentQueryTask::run()
 {
   struct head headTmp;
 
-  headTmp = AgentBehaviorTask::decodePacHead(recvQue);
-  recvQue.pop();
+  headTmp = AgentBehaviorTask::decodePacHead(recv_que);
+
+  //free((char *)recv_que.front().first);
+  recv_que.pop();
 
   if(headTmp.cmd != PacketCommand::QueryCmd)
   {
@@ -15,7 +17,7 @@ void AgentQueryTask::run()
     char * head;
     char * tail;
     Packet::MakeErrorAck(AckPacCmd::SEQUENCE_ERROR,head,tail);
-    sendQue.push(make_pair(head,tail));
+    send_que.push(make_pair(head,tail));
     return;
   }
 
@@ -25,7 +27,7 @@ void AgentQueryTask::run()
     char * head;
     char * tail;
     Packet::MakeErrorAck(AckPacCmd::USER_OFFLINE,head,tail);
-    sendQue.push(make_pair(head,tail));
+    send_que.push(make_pair(head,tail));
     return;
   }
 
@@ -33,6 +35,9 @@ void AgentQueryTask::run()
   char * head;
   char * tail;
   Packet::MakeSucAck(AckPacCmd::QUERY_SUC,head,tail);
-  sendQue.push(make_pair(head,tail));
+  send_que.push(make_pair(head,tail));
+
+  //改变状态
+  agent_state->setState(State::RELAY);
   return;
 }

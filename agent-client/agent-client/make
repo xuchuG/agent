@@ -1,0 +1,1 @@
+g++ clientMain.cpp connect.cpp epoll.cpp fileOp.cpp readPacManage.cpp tcpConn.cpp writePacManage.cpp -w -g  -o  agentclient

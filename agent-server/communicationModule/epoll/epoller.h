@@ -3,13 +3,14 @@
 
 class Epoller{
     private:
-        int id_;//每个epoller的标志
+        long long id_;//每个epoller的标志
         int fd_;
 
     public:
-        Epoller(int idd,int fdd);
-        ~Epoller();
+        Epoller(long long idd,int fdd);
+        ~Epoller(){}
 
+        long long getId();
         int getFd();
 
         virtual void in() = 0;

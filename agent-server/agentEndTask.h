@@ -4,21 +4,22 @@
 #include <queue>
 
 #include "agentBehaviorTask.h"
+#include "./communicationModule/epoll/tcpEpoller.h"
 
 using Queue = queue<pair<char*,char*> >;
 
 class AgentEndTask : public AgentBehaviorTask
 {
   private:
-    Queue & recvQue;
-    Queue & sendQue;
-    agent_trans * relay_trans;
+    Queue & recv_que;
+    Queue & send_que;
+    TcpEpoller * tcp_epoller;
 
   public:
     AgentEndTask(AgentTransManage & atrans_manage,Queue & recvque,
-        Queue & sendque,agent_trans * ptr):AgentBehaviorTask(atrans_manage),recvQue(recvque),sendQue(sendque)
+        Queue & sendque,TcpEpoller * ptr):AgentBehaviorTask(atrans_manage),recv_que(recvque),send_que(sendque)
     {
-      relay_trans = ptr;
+      tcp_epoller = ptr;
     }
     ~AgentEndTask();
 

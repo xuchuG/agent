@@ -18,20 +18,30 @@ class Epoll{
        AgentEpollerManage & agent_epoller_manage;
 
     private:
-        Epoll(int socket_sizee,AgentEpollerManage agent_epoller_managee);
-        Epoll(Epoll const &){}
+        Epoll(int socket_sizee,AgentEpollerManage& agent_epoller_managee):
+            agent_epoller_manage(agent_epoller_managee){
+                    socket_size = socket_sizee;
+                    events = (struct epoll_event *)malloc(sizeof(struct epoll_event)*socket_size);
+
+                    epoll_fd = epoll_create(socket_size);
+                    }
+
+        Epoll(Epoll const &,AgentEpollerManage agent_epoller_managee):
+            agent_epoller_manage(agent_epoller_managee){}
+
         Epoll & operator=(Epoll const &){}
+    public:
         ~Epoll();
 
     public:
-        static Epoll & instance();
+        static Epoll & getInstance(AgentEpollerManage& agent_epoller_manage);
         //void init(int listenSocket);//epoll_create & listenSocket add event
         void oneRound();
         void handOneEvent(struct epoll_event ev);
 
         void addEvent(long long epoller_id,int fd,int state);
         void modifyEvent(long long epoller_id,int fd,int state);
-        void deleteEvent(long long epoller_id,int state);
+        void deleteEvent(long long epoller_id,int fd,int state);
 
 };
 

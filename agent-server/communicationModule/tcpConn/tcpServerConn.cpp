@@ -4,6 +4,8 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <iostream>
+using namespace std;
 
 int TcpServerConn::tcpListen(char ip[],short port){
     struct sockaddr_in servAddr;
@@ -15,7 +17,7 @@ int TcpServerConn::tcpListen(char ip[],short port){
     servAddr.sin_port = htons(port);
 
     int listen_socket;
-    if((listen_socket = socket(AF_INET,SOCK_STREAM,0) < 0){
+    if((listen_socket = socket(AF_INET,SOCK_STREAM,0) ) < 0){
         cerr << "TcpServerConn::tcpListen : socket error!\n";
         cerr << "errno: " << errno << endl;
     }
@@ -36,6 +38,8 @@ int TcpServerConn::tcpListen(char ip[],short port){
         cerr << "TcpServerConn::tcpListen : listen error!\n";
         cerr << "error: " << errno << endl;
     }
+
+    return listen_socket;
 }
 
 
@@ -44,7 +48,7 @@ int TcpServerConn::tcpAccept(int listen_socket){
     socklen_t cliLen = sizeof(struct sockaddr);
 
     int socket;
-    if((socket = accept(listen_socket,(struct sockaddr *)&cliAddr,&cliLen) < 0){
+    if((socket = accept(listen_socket,(struct sockaddr *)&cliAddr,&cliLen) ) < 0){
         cerr << "TcpServerConn::tcpAccept : accept error!\n";
         cerr << "errno : " << errno << endl;
     }

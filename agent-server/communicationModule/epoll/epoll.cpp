@@ -1,21 +1,22 @@
 #include "epoll.h"
+#include <unistd.h>
 
-Epoll::Epoll(int socket_sizee,AgentEpollerManage & agent_epoller_managee):
+/*Epoll::Epoll(int socket_sizee,AgentEpollerManage & agent_epoller_managee):
             agent_epoller_manage(agent_epoller_managee){
     socket_size = socket_sizee;
     events = (struct epoll_event *)malloc(sizeof(struct epoll_event)*socketSize);
 
     epoll_fd = epoll_create(socket_size);
-}
+}*/
 
 Epoll::~Epoll(){
     free(events);
-    close(epollFd);
+    close(epoll_fd);
 }
 
-Epoll & Epoll::instance(){
-    static Epoll single_epoll(MAX_SOCKET_SIZE);
-	return single_epoll;
+Epoll & Epoll::getInstance(AgentEpollerManage& agent_epoller_manage){
+    static Epoll single_epoll(MAX_SOCKET_SIZE,agent_epoller_manage);
+    return single_epoll;
 }
 
 /*void Epoll::init(int listenSocket){
@@ -32,7 +33,7 @@ Epoll & Epoll::instance(){
 void Epoll::oneRound()
 {
     int event_count;
-    if((event_count = epoll_wait(epollFd,events,socketSize,-1)) == -1){
+    if((event_count = epoll_wait(epoll_fd,events,socket_size,-1)) == -1){
         cerr << "epoll_wait error!\n";
     }
 
@@ -65,7 +66,7 @@ void Epoll::addEvent(long long epoller_id,int fd,int state)
   }
 }
 
-void Epoll::modify_event(long long epoller_id,int fd,int state)
+void Epoll::modifyEvent(long long epoller_id,int fd,int state)
 {
   struct epoll_event ev;
   ev.events = state;
@@ -85,3 +86,4 @@ void Epoll::deleteEvent(long long epoller_id,int fd,int state)
   {
     cerr << "epoll_ctl_del error!\n";
   }
+}
