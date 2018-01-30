@@ -4,16 +4,22 @@
 #include "readPacManage.h"
 #include "writePacManage.h"
 
+#include <string>
+
 int dataLen;
+int linkNum;
+
+int Send_Times;
+
+string Send_Data;
 
 int main(int argc,char **argv)
 {
-  int linkNum;
   char * localIp;
   char * remoteIp;
   short remotePort;
-  cout << "示例：" << "./client 本地ip 目的ip 目的端口 连接数 报文大小\n";
-  if(argc < 6)
+  cout << "示例：" << "./client 本地ip 目的ip 目的端口 连接数 报文大小 发送次数\n";
+  if(argc < 7)
   {
     cout << "parameter is too few!\n";
     return 0;
@@ -41,13 +47,22 @@ int main(int argc,char **argv)
   if(argv[5])
   {
     dataLen = atoi(argv[5]);
-    cout << dataLen << endl; 
+
+    FileOp fOp;
+    Send_Data = fOp.readFile("data.txt",dataLen);
+
+    cout << dataLen << endl;
+  }
+  if(argv[6])
+  {
+      Send_Times = atoi(argv[6]);
+      cout << Send_Times << endl;
   }
 
   //建立linkNum个连接
   Connect conn(linkNum,localIp,remoteIp,remotePort,true,false,true,true,true);
   conn.run();
-  
+
   int echoTimes =  0;
   //epoll注册，监听事件
   Epoll ep1(linkNum);
@@ -61,14 +76,14 @@ int main(int argc,char **argv)
       if(events[i].events & EPOLLOUT)
       {
         WritePacManage *pac = (WritePacManage *)events[i].data.ptr;
-        pac->writeSocket(ep1,dataLen); 
+        pac->writeSocket(ep1,dataLen);
       }
       else if(events[i].events & EPOLLIN)
       {
         ReadPacManage *pac = (ReadPacManage *)events[i].data.ptr;
-        pac->readSocket(ep1); 
+        pac->readSocket(ep1);
       }
     }
-  }  
+  }
   return 0;
 }

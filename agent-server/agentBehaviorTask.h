@@ -12,14 +12,11 @@ class AgentBehaviorTask : public AgentBaseTask
 {
   private:
 
-  protected:
-    AgentTransManage & agent_trans_manage;
   public:
-    AgentBehaviorTask(AgentTransManage & atrans_manage):
-        agent_trans_manage(atrans_manage){}
+    AgentBehaviorTask(){}
     ~AgentBehaviorTask(){}
 
-    static struct head decodePacHead(Queue & queue);
+    struct head decodePacHead(struct pacStandardFormat pac);
 
     virtual void run();
 };

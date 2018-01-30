@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+extern int linkNum;
+extern int Send_Times;
+int Total_Recv_Times;
+
 ReadPacManage::ReadPacManage(int fdd,long long userIdd,int inIndexx)
 {
   fd = fdd;
@@ -188,6 +192,12 @@ void ReadPacManage::recvPac()
       {
         pac[len] = '\0';
         cout << this->userId << "收到的消息：" << *(long long *)(pac+LenAndCmd)  << " say:" << (pac+HeadSize) << endl;
+
+        Total_Recv_Times++;
+        if(Total_Recv_Times >= linkNum*Send_Times){
+            cout << "Total_Recv_Times: " << Total_Recv_Times << endl;
+        }
+
         pacRecvOver = true;
       }
     }

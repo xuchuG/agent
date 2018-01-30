@@ -1,9 +1,10 @@
 #include "supervisor.h"
 #include "epoller.h"
-#include "listenEpoller.h"
-#include "agentServerEpoller.h"
+#include "../../threadPool/threadPoolSurpervisor.h"
 #include <iostream>
 using namespace std;
+
+extern ThreadPoolSurpervisor * g_thread_pool_surpervisor;
 
 void Supervisor::run(){
     while(1){
@@ -11,36 +12,18 @@ void Supervisor::run(){
     }
 }
 
-void Supervisor::addListenEpoller(int listen_socket){
+void Supervisor::addThreadPoolSurpervisor(int write_handler){
     int epoller_id = agent_epoller_manage.generateId();
 
-    epoll.addEvent(epoller_id,listen_socket,EPOLLIN);
+    epoll.addEvent(epoller_id,write_handler,EPOLLIN | EPOLLOUT);
 
-    Epoller* epoller = new ListenEpoller(epoller_id,listen_socket,
-            [=](int accept_fd){
-                this->addAgentServerEpoller(accept_fd);
-            });
+    g_thread_pool_surpervisor = new ThreadPoolSurpervisor(epoller_id,write_handler);
 
-    if(agent_epoller_manage.insert(epoller_id,epoller) < 0){
+    if(agent_epoller_manage.insert(epoller_id,(Epoller *)g_thread_pool_surpervisor) < 0){
         cerr << "agent_epoller_manage::insert error!  epoller_id:" << epoller_id << endl;
     }
-
 }
 
-void Supervisor::addAgentServerEpoller(int accept_fd){
-    int epoller_id = agent_epoller_manage.generateId();
-
-    epoll.addEvent(epoller_id,accept_fd,EPOLLIN | EPOLLOUT);
-
-    Epoller* epoller = new AgentServerEpoller(epoller_id,accept_fd,tcp_epoller_call_back);
-
-    if(agent_epoller_manage.insert(epoller_id,epoller) < 0){
-        cerr << "agent_epoller_manage::insert error!  epoller_id:" << epoller_id << endl;
-    }
-
-    cout << "epoller_id :" << epoller_id << endl;
-}
-
-void Supervisor::addTcpEpollerCallBack(std::function<void(Queue&,Queue&,TcpEpoller*)> call_back){
+/*void Supervisor::addTcpEpollerCallBack(std::function<void(TcpEpoller*)> call_back){
     tcp_epoller_call_back = call_back;
-}
+}*/

@@ -3,8 +3,9 @@
 
 #include "tableManage.h"
 #include "agentState.h"
+#include "../communicationModule/epoll/tcpEpoller.h"
 
-class AgentStateManage : public TableManage<long long,AgentState *>
+class AgentStateManage : public TableManage<TcpEpoller*,AgentState *>
 {
     public:
         AgentStateManage(){}

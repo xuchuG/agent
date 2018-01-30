@@ -59,6 +59,8 @@ struct toGroupPac
 class WritePacManage
 {
   public:
+    int send_times;
+
     int fd;//绑定的描述符
     long long userId;//用户id
     int outIndex;//发送的位置

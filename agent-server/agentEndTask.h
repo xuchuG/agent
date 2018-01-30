@@ -11,13 +11,10 @@ using Queue = queue<pair<char*,char*> >;
 class AgentEndTask : public AgentBehaviorTask
 {
   private:
-    Queue & recv_que;
-    Queue & send_que;
     TcpEpoller * tcp_epoller;
 
   public:
-    AgentEndTask(AgentTransManage & atrans_manage,Queue & recvque,
-        Queue & sendque,TcpEpoller * ptr):AgentBehaviorTask(atrans_manage),recv_que(recvque),send_que(sendque)
+    AgentEndTask(TcpEpoller * ptr)
     {
       tcp_epoller = ptr;
     }

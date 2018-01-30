@@ -7,10 +7,14 @@ class Epoller{
         int fd_;
 
     public:
-        Epoller(long long idd,int fdd);
+        Epoller(){}             //for agentServerEpoller
+        Epoller(int id,int fd); //for listenEpoller
         ~Epoller(){}
 
+        void setId(long long id);
         long long getId();
+
+        void setFd(int fd);
         int getFd();
 
         virtual void in() = 0;

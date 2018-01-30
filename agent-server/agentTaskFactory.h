@@ -10,7 +10,7 @@ using Queue = queue<pair<char*,char*> >;
 class AgentTaskFactory
 {
     public:
-        void taskDispatch(Queue& recv_que,Queue& send_que,TcpEpoller* tcp_epoller);
+        void taskDispatch(TcpEpoller* tcp_epoller);
 };
 
 #endif

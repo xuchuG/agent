@@ -6,7 +6,6 @@ using namespace std;
 void ListenEpoller::in(){
     int fd = TcpServerConn::tcpAccept(getFd());
     new_connection_callback_(fd);
-    cout <<"accept_fd: " << fd << endl;
 }
 
 void ListenEpoller::out(){

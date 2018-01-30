@@ -1,14 +1,6 @@
 #include "epoll.h"
 #include <unistd.h>
 
-/*Epoll::Epoll(int socket_sizee,AgentEpollerManage & agent_epoller_managee):
-            agent_epoller_manage(agent_epoller_managee){
-    socket_size = socket_sizee;
-    events = (struct epoll_event *)malloc(sizeof(struct epoll_event)*socketSize);
-
-    epoll_fd = epoll_create(socket_size);
-}*/
-
 Epoll::~Epoll(){
     free(events);
     close(epoll_fd);
@@ -18,17 +10,6 @@ Epoll & Epoll::getInstance(AgentEpollerManage& agent_epoller_manage){
     static Epoll single_epoll(MAX_SOCKET_SIZE,agent_epoller_manage);
     return single_epoll;
 }
-
-/*void Epoll::init(int listenSocket){
-  epollFd = epoll_create(socketSize);
-  struct epoll_event ev;
-  ev.events = EPOLLIN;
-  ev.data.fd = listenSocket;
-  if(epoll_ctl(epollFd,EPOLL_CTL_ADD,listenSocket,&ev) == -1)
-  {
-    cerr << "listenSocket:epoll_ctl_add error!\n";
-  }
-}*/
 
 void Epoll::oneRound()
 {
@@ -49,7 +30,7 @@ void Epoll::handOneEvent(struct epoll_event ev){
     if(ev.events & EPOLLIN){
         epoller->in();
     }
-    else if(ev.events & EPOLLOUT){
+    if(ev.events & EPOLLOUT){
         epoller->out();
     }
 

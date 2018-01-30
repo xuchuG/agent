@@ -2,8 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 
+extern int Send_Times;
+extern string Send_Data;
+
 WritePacManage::WritePacManage(int fdd,long long userIdd,int outIndexx)
 {
+  send_times = 0;
   fd = fdd;
   userId = userIdd;
   outIndex = outIndexx;
@@ -22,6 +26,7 @@ WritePacManage::WritePacManage(int fdd,long long userIdd,int outIndexx)
 WritePacManage::WritePacManage(int fdd,long long userIdd,int outIndexx,bool loginPacSendd,
         bool loginPacSendOverr,bool addFriendPacSendd,bool addFriendPacSendOverr)
 {
+  send_times = 0;
   fd = fdd;
   userId = userIdd;
   outIndex = outIndexx;
@@ -40,6 +45,10 @@ WritePacManage::WritePacManage(int fdd,long long userIdd,int outIndexx,bool logi
 
 void WritePacManage::writeSocket(Epoll &ep,int dataLen)
 {
+    if(send_times == Send_Times){
+        return;
+    }
+
   if(!loginPacSendOver)//登录包没发或没发完
   {
     sendLoginPac();
@@ -77,6 +86,9 @@ void WritePacManage::writeSocket(Epoll &ep,int dataLen)
       pac = NULL;
       pacSend = false;
       pacSendOver = false;
+
+      send_times++;
+
     }
   }
 }
@@ -180,9 +192,9 @@ void WritePacManage::sendFriendPac(long long friendId,int dataLen)
       ((struct toFriendPac*)pac)->cmd = ToFriendCmd;
       ((struct toFriendPac*)pac)->friendId = friendId;
       //加数据部分
-      FileOp fOp;
-      string s = fOp.readFile("data.txt",dataLen);
-      strcpy(((struct toFriendPac*)pac)->data,s.c_str());
+      //FileOp fOp;
+      //string s = fOp.readFile("data.txt",dataLen);
+      strcpy(((struct toFriendPac*)pac)->data,Send_Data.c_str());
       pacSend = true;
     }
   }

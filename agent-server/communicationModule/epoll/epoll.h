@@ -35,7 +35,6 @@ class Epoll{
 
     public:
         static Epoll & getInstance(AgentEpollerManage& agent_epoller_manage);
-        //void init(int listenSocket);//epoll_create & listenSocket add event
         void oneRound();
         void handOneEvent(struct epoll_event ev);
 

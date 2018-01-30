@@ -6,18 +6,21 @@
 #include <string.h>
 #include <iostream>
 
-RecvPacManage::RecvPacManage(int fdd){
-    fd = fdd;
+RecvPacManage::RecvPacManage(){
     pac = (char*)malloc(HeadSize);
     in_index = 0;
     read_state = BehaviorState::HEADER;
 }
 
-int RecvPacManage::recvPac(Queue& recv_que){//return 0-->接收完一个包  return -1---->未接收完一个包
+void RecvPacManage::setFd(int fd){
+    this->fd_ = fd;
+}
+
+int RecvPacManage::recvPac(struct pacStandardFormat& pac_standard_format){//return 0-->接收完一个包  return -1---->未接收完一个包
     int count;
     switch(read_state){
         case BehaviorState::HEADER:
-            if((count = read(fd,pac+in_index,HeadSize-in_index)) < 0){
+            if((count = read(fd_,pac+in_index,HeadSize-in_index)) < 0){
                 if((errno != EWOULDBLOCK) && (errno != EINTR)){
                     cerr << "read error!\n";
                     cerr << "errno: " << errno << "  " << strerror(errno) << endl;
@@ -33,7 +36,8 @@ int RecvPacManage::recvPac(Queue& recv_que){//return 0-->接收完一个包  ret
                 int pac_len = *((int*)pac);
                 if(pac_len == HeadSize){
                     //加入到接收队列
-                    recv_que.push(make_pair(pac,pac+pac_len));
+                    pac_standard_format.head = pac;
+                    pac_standard_format.tail = pac + pac_len;
                     pac = (char *)malloc(HeadSize);
                     in_index = 0;
                     read_state = BehaviorState::HEADER;
@@ -51,7 +55,7 @@ int RecvPacManage::recvPac(Queue& recv_que){//return 0-->接收完一个包  ret
 
         case BehaviorState::DATA:
             int pac_len = *((int*)pac);
-            if((count = read(fd,pac+in_index,pac_len-in_index)) < 0){
+            if((count = read(fd_,pac+in_index,pac_len-in_index)) < 0){
                 if((errno != EWOULDBLOCK) && (errno != EINTR)){
                     cerr << "read error!\n";
                     cerr << "errno: " << errno << endl;
@@ -63,7 +67,8 @@ int RecvPacManage::recvPac(Queue& recv_que){//return 0-->接收完一个包  ret
 
             if(in_index == pac_len){
                 //放到接收队列
-                recv_que.push(make_pair(pac,pac+pac_len));
+                pac_standard_format.head = pac;
+                pac_standard_format.tail = pac + pac_len;
                 pac = (char *)malloc(HeadSize);
                 in_index = 0;
                 read_state = BehaviorState::HEADER;

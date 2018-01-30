@@ -8,6 +8,11 @@ struct head
     long long id;
 };
 
+struct pacStandardFormat{
+    char* head;
+    char* tail;
+};
+
 #define HeadSize 16
 
 class Packet

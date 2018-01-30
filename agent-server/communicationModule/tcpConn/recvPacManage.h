@@ -1,10 +1,11 @@
 #ifndef _RECVPACMANAGE_H_
 #define _RECVPACMANAGE_H_
 
+#include "../../packet/packet.h"
+
 #include <queue>
 using namespace std;
 
-using Queue = queue<pair<char*,char*> >;
 
 enum BehaviorState : const int{
     HEADER,
@@ -13,15 +14,18 @@ enum BehaviorState : const int{
 
 class RecvPacManage{
     private:
-        int fd;
+        int fd_;
         char * pac;
         int in_index;
         BehaviorState read_state;
 
     public:
-        RecvPacManage(int fdd);
+        RecvPacManage();
+        ~RecvPacManage(){}
 
-        int recvPac(Queue& recv_que);
+        void setFd(int fd);
+
+        int recvPac(struct pacStandardFormat& pac_standard_format);
 };
 
 #endif

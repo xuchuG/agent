@@ -6,7 +6,9 @@ void AgentEndTask::run()
 {
     struct head headTmp;
 
-    headTmp = AgentBehaviorTask::decodePacHead(recv_que);
+    struct pacStandardFormat pac_standard_format;
+    tcp_epoller->popRecvPac(pac_standard_format);
+    headTmp = AgentBehaviorTask::decodePacHead(pac_standard_format);
     if(headTmp.cmd != PacketCommand::EndCmd)
     {
 

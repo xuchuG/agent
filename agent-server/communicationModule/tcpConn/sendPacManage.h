@@ -1,20 +1,24 @@
 #ifndef _SENDPACMANAGE_H_
 #define _SENDPACMANAGE_H_
 
+#include "../../packet/packet.h"
+
 #include <queue>
-using Queue = std::queue<std::pair<char*,char*> >;
 
 class SendPacManage{
     private:
-        int fd;
+        int fd_;
         char* pac_head;
         char* pac_tail;
         int out_index;
 
     public:
-        SendPacManage(int fdd);
+        SendPacManage();
+        ~SendPacManage(){}
 
-        int sendPac(Queue& send_que);
+        void setFd(int fd);
+
+        int sendPac(struct pacStandardFormat pac_standard_format);
 };
 
 #endif

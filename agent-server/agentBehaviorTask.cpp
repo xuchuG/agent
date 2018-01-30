@@ -5,14 +5,13 @@ void AgentBehaviorTask::run()
 
 }
 
-struct head AgentBehaviorTask::decodePacHead(Queue & queue)
+struct head AgentBehaviorTask::decodePacHead(struct pacStandardFormat pac)
 {
     struct head headTmp;
-    char * pac;
-    pair<char*,char*> tmp = queue.front();
-    pac = tmp.first;
-    headTmp.len = *(int *)pac;
-    headTmp.cmd = *(int *)(pac+4);
-    headTmp.id = *(long long *)(pac+8);
+    char * pac_head;
+    pac_head = pac.head;
+    headTmp.len = *(int *)pac_head;
+    headTmp.cmd = *(int *)(pac_head+4);
+    headTmp.id = *(long long *)(pac_head+8);
     return headTmp;
 }
