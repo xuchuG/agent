@@ -3,8 +3,6 @@
 
 #include "tcpEpoller.h"
 
-using Queue = queue<pair<char*,char*> >;
-
 class AgentServerEpoller : public TcpEpoller{
     public:
         AgentServerEpoller(){}

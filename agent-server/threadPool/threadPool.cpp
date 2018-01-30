@@ -1,7 +1,7 @@
 #include "threadPool.h"
 #include <unistd.h>
 #include <iostream>
-#include "../agentBaseTask.h"
+#include "../task/agentBaseTask.h"
 
 void threadItem(AgentBaseTask* task);
 
