@@ -2,10 +2,15 @@
 #include "writePacManage.h"
 #include <stdlib.h>
 #include <time.h>
+#include <sys/time.h>
 
 extern int linkNum;
 extern int Send_Times;
 int Total_Recv_Times;
+
+extern double Time_Use;
+extern struct timeval Start;
+extern struct timeval End;
 
 ReadPacManage::ReadPacManage(int fdd,long long userIdd,int inIndexx)
 {
@@ -195,6 +200,11 @@ void ReadPacManage::recvPac()
 
         Total_Recv_Times++;
         if(Total_Recv_Times >= linkNum*Send_Times){
+
+            gettimeofday(&End,NULL);
+            Time_Use = (End.tv_sec-Start.tv_sec)+(End.tv_usec-Start.tv_usec)/1000000;
+            cout << "Relay time: " << Time_Use << "s" << endl;
+
             cout << "Total_Recv_Times: " << Total_Recv_Times << endl;
         }
 

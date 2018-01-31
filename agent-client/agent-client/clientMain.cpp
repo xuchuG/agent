@@ -5,6 +5,7 @@
 #include "writePacManage.h"
 
 #include <string>
+#include <sys/time.h>
 
 int dataLen;
 int linkNum;
@@ -12,6 +13,11 @@ int linkNum;
 int Send_Times;
 
 string Send_Data;
+
+double Time_Use = 0;
+struct timeval Start;
+struct timeval End;
+
 
 int main(int argc,char **argv)
 {
@@ -67,6 +73,9 @@ int main(int argc,char **argv)
   //epoll注册，监听事件
   Epoll ep1(linkNum);
   ep1.init(conn);
+
+  gettimeofday(&Start,NULL);
+
   for(;;)
   {
     ep1.run();
